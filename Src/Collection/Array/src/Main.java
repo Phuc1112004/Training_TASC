@@ -1,3 +1,5 @@
+package Src.Collection.Array.src;
+
 public class Main {
     public static void main(String[] args) {
         // khởi tạo mảng
