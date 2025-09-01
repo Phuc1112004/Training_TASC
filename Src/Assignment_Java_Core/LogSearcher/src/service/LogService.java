@@ -20,31 +20,32 @@ public class LogService {
         this.repository = repository;
     }
 
-    public List<LogEntry> searchByLevel(String level) throws ExecutionException, InterruptedException {
-        Callable<List<LogEntry>> task = () -> repository.getLogs().stream()
+    public List<LogEntry> searchByLevel(String level) {
+        return repository.getLogs().stream()
                 .filter(log -> log.getLevel().equalsIgnoreCase(level.trim()))
-                .collect(Collectors.toList());
-        return executor.submit(task).get();
+                .toList();
     }
 
-    public List<LogEntry> searchByTimeRange(LocalDateTime start, LocalDateTime end) throws ExecutionException, InterruptedException {
-        Callable<List<LogEntry>> task = () -> repository.getLogs().stream()
+
+
+    public List<LogEntry> searchByTimeRange(LocalDateTime start, LocalDateTime end) {
+        return repository.getLogs().stream()
                 .filter(log -> log.getTimestamp() != null &&
                         (log.getTimestamp().isAfter(start) || log.getTimestamp().isEqual(start)) &&
                         (log.getTimestamp().isBefore(end) || log.getTimestamp().isEqual(end)))
-                .collect(Collectors.toList());
-        return executor.submit(task).get();
+                .toList();
     }
 
-    public List<LogEntry> searchByMessage(String keyword) throws ExecutionException, InterruptedException {
-        Callable<List<LogEntry>> task = () -> repository.getLogs().stream()
+
+    public List<LogEntry> searchByMessage(String keyword) {
+        return repository.getLogs().stream()
                 .filter(log -> log.getMessage() != null && log.getMessage().contains(keyword))
-                .collect(Collectors.toList());
-        return executor.submit(task).get();
+                .toList();
     }
 
 
 
+//  tìm kiếm theo nhiều tiêu chí chạy đa luồng và mỗi luồng 1 tiêu chí tìm kiếm
     public Future<List<LogEntry>> searchByMultipleCriteriaAsync(String level, LocalDateTime start, LocalDateTime end, String keyword) {
         return executor.submit(() -> {
             System.out.println("Main task đang chạy trên thread: " + Thread.currentThread().getName());
