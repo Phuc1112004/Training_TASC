@@ -1,4 +1,5 @@
-import javax.swing.text.DateFormatter;
+package Test;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class GenerateSampleLog {
         long secondsRange = Duration.between(startDate, LocalDateTime.of(2025,11,1,0,0,0)).getSeconds();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
-            for (int i = 0; i < 2000000; i++) {
+            for (int i = 0; i < 500000; i++) {
                 long randomSeconds = random.nextLong(secondsRange);
                 LocalDateTime randomTime = startDate.plusSeconds(randomSeconds);
                 String timestamp = randomTime.format(TIMETAMP_FORMAT);
