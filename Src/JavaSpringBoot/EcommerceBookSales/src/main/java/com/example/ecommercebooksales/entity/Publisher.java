@@ -18,17 +18,17 @@ import java.util.List;
 public class Publisher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long publisher_id;
+    private Long publisherId;
 
-    private String publisher_name;
+    private String publisherName;
     private String address;
     private String phone;
     private String email;
     private String website;
     private String country;
-    private LocalDate founded_year;
+    private LocalDate foundedYear;
     private String description;
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "publisher")
     private List<Books> books;

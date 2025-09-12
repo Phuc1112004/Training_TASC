@@ -1,8 +1,10 @@
 package com.example.ecommercebooksales.dto;
 
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDate;
 
@@ -10,12 +12,19 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class PublisherDTO {
+    private Long publisher_id;
+    @NotBlank(message = "Tên nhà xuất bản không được để trống")
     private String publisher_name;
     private String address;
+    @Pattern(regexp = "^\\+?[0-9]{9,15}$", message = "Số điện thoại không hợp lệ")
     private String phone;
+    @Email(message = "Email không hợp lệ")
     private String email;
+    @URL(message = "Website không hợp lệ")
     private String website;
     private String country;
+    @Min(value = 1000, message = "Năm thành lập không hợp lệ")
+    @Max(value = 2100, message = "Năm thành lập không hợp lệ")
     private LocalDate founded_year;
     private String description;
 }

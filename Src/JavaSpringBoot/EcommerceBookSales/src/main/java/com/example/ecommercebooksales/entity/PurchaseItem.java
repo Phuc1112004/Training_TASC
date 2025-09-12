@@ -11,9 +11,9 @@ import java.awt.print.Book;
 public class PurchaseItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long purchase_item_id;
+    private Long purchaseItemId;
     private int quantity;
-    private long unit_price;
+    private long unitPrice;
 
     @ManyToOne
     @JoinColumn(name = "purchase_id")

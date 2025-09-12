@@ -16,8 +16,8 @@ import java.util.List;
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long author_id;
-    private String author_name;
+    private Long authorId;
+    private String authorName;
     private String biography;
 
     @OneToMany(mappedBy = "author")

@@ -12,7 +12,7 @@ import java.util.List;
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long order_id;
+    private Long orderId;
     private Long total_amount;
     private String status;
     private String shipping_address;
@@ -22,8 +22,8 @@ public class Orders {
     @JoinColumn(name = "user_id")
     private Users users;
 
-    @OneToMany(mappedBy = "orders")
-    private List<OrderItem> order_item;
+    @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems;
 
     @OneToMany(mappedBy = "orders")
     private List<Payment> payment;

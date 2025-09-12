@@ -13,11 +13,11 @@ import java.util.List;
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long purchase_id;
+    private Long purchaseId;
 
-    private String supplier_name;
-    private Long total_cost;
-    private LocalDate purchase_date;
+    private String supplierName;
+    private Long totalCost;
+    private LocalDate purchaseDate;
 
     @OneToMany(mappedBy = "purchase")
     private List<PurchaseItem> items;

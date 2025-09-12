@@ -20,7 +20,7 @@ public class AuthorService {
     // ---------------- CREATE ----------------
     public AuthorDTO createAuthor(AuthorDTO request) {
         Author author = new Author();
-        author.setAuthor_name(request.getAuthorName());
+        author.setAuthorName(request.getAuthorName());
         author.setBiography(request.getBiography());
 
         Author saved = authorRepository.save(author);
@@ -47,7 +47,7 @@ public class AuthorService {
     public AuthorDTO updateAuthor(Long id, AuthorDTO request) {
         return authorRepository.findById(id)
                 .map(author ->{
-                    author.setAuthor_name(request.getAuthorName());
+                    author.setAuthorName(request.getAuthorName());
                     author.setBiography(request.getBiography());
 
                     Author updated = authorRepository.save(author);
@@ -68,8 +68,8 @@ public class AuthorService {
     // ---------------- CONVERT ----------------  những dữ liệu sinh ra khi create
     private AuthorDTO convertToDTO(Author author){
         AuthorDTO dto = new AuthorDTO();
-        dto.setAuthorId(author.getAuthor_id());
-        dto.setAuthorName(author.getAuthor_name());
+        dto.setAuthorId(author.getAuthorId());
+        dto.setAuthorName(author.getAuthorName());
         dto.setBiography(author.getBiography());
         return dto;
     }

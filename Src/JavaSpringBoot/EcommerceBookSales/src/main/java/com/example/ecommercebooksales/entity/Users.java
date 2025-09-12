@@ -1,7 +1,12 @@
 package com.example.ecommercebooksales.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,14 +17,26 @@ import java.util.List;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id;
-
+    private Long userId;
+    @NotBlank(message = "Username không được để trống")
+    @Size(min = 3, max = 50, message = "Username từ 3 đến 50 ký tự")
     private String username;
+    @NotBlank(message = "Password không được để trống")
+    @Size(min = 6, max = 100, message = "Password từ 6 đến 100 ký tự")
     private String password;
+    @Email(message = "Email không hợp lệ")
+    @NotBlank(message = "Email không được để trống")
     private String email;
+    @Pattern(regexp = "^\\+?[0-9]{9,15}$", message = "Số điện thoại không hợp lệ")
     private String phone;
+    @NotBlank(message = "Role không được để trống")
+    @Pattern(regexp = "^(ADMIN|CUSTOMER)$", message = "Role phải là 'ROLE_ADMIN' hoặc 'CUSTOMER'")
     private String role;
-    private LocalDateTime create_at;
+
+    // Thời điểm tạo user
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createAt;
 
     @OneToMany(mappedBy = "users")
     private List<Cart> carts;

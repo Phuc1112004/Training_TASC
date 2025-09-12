@@ -37,10 +37,10 @@ public class BookService {
     public BookResponseDTO createBook(BookRequestDTO request) {
         Books book = new Books();
         book.setTitle(request.getTitle());
-        book.setImport_price(request.getImportPrice());
-        book.setMarket_price(request.getMarketPrice());
-        book.setSale_price(request.getSalePrice());
-        book.setStock_quantity(request.getStockQuantity());
+        book.setImportPrice(request.getImportPrice());
+        book.setMarketPrice(request.getMarketPrice());
+        book.setSalePrice(request.getSalePrice());
+        book.setStockQuantity(request.getStockQuantity());
         book.setDescription(request.getDescription());
         book.setImageUrl(request.getImageUrl());
         book.setCreated_at(LocalDateTime.now());
@@ -80,10 +80,10 @@ public class BookService {
         return bookRepository.findById(id)
                 .map(book -> {
                     book.setTitle(request.getTitle());
-                    book.setImport_price(request.getImportPrice());
-                    book.setMarket_price(request.getMarketPrice());
-                    book.setSale_price(request.getSalePrice());
-                    book.setStock_quantity(request.getStockQuantity());
+                    book.setImportPrice(request.getImportPrice());
+                    book.setMarketPrice(request.getMarketPrice());
+                    book.setSalePrice(request.getSalePrice());
+                    book.setStockQuantity(request.getStockQuantity());
                     book.setDescription(request.getDescription());
                     book.setImageUrl(request.getImageUrl());
 
@@ -114,15 +114,15 @@ public class BookService {
     // ---------------- CONVERT ----------------
     private BookResponseDTO convertToDTO(Books book) {
         BookResponseDTO dto = new BookResponseDTO();
-        dto.setBookId(book.getBook_id());
+        dto.setBookId(book.getBookId());
         dto.setTitle(book.getTitle());
-        dto.setAuthorName(book.getAuthor().getAuthor_name());
-        dto.setPublisherName(book.getPublisher().getPublisher_name());
-        dto.setCategoryName(book.getCategory().getCategory_name());
-        dto.setImportPrice(book.getImport_price());
-        dto.setMarketPrice(book.getMarket_price());
-        dto.setSalePrice(book.getSale_price());
-        dto.setStockQuantity(book.getStock_quantity());
+        dto.setAuthorName(book.getAuthor().getAuthorName());
+        dto.setPublisherName(book.getPublisher().getPublisherName());
+        dto.setCategoryName(book.getCategory().getCategoryName());
+        dto.setImportPrice(book.getImportPrice());
+        dto.setMarketPrice(book.getMarketPrice());
+        dto.setSalePrice(book.getSalePrice());
+        dto.setStockQuantity(book.getStockQuantity());
         dto.setDescription(book.getDescription());
         dto.setImageUrl(book.getImageUrl());
         dto.setCreatedAt(book.getCreated_at());

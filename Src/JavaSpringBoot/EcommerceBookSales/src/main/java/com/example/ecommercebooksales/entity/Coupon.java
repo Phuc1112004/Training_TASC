@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long coupon_id;
+    private Long couponId;
 
     private String code;
-    private Integer discount_percent;
+    private Integer discountPercent;
 
     @Column(precision = 10, scale = 2)
-    private BigDecimal max_discount;
+    private BigDecimal maxDiscount;
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;

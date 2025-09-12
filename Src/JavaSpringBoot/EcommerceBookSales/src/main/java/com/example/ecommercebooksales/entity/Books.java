@@ -16,12 +16,12 @@ import java.util.List;
 public class Books {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long book_id;
+    private Long bookId;
     private String title;
-    private Long import_price;
-    private Long market_price;
-    private Long sale_price;
-    private Integer stock_quantity;
+    private Long importPrice;
+    private Long marketPrice;
+    private Long salePrice;
+    private Integer stockQuantity;
     private String description;
     private String imageUrl;
     private LocalDateTime created_at;

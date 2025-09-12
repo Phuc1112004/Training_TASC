@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 public class CouponDTO {
     private String code;
-    private Integer discount_percent;
+    private Integer discountPercent;
     @Column(precision = 10, scale = 2)
     private BigDecimal max_discount;
     private LocalDateTime startDate;

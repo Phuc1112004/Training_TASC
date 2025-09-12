@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long payment_id;
+    private Long paymentId;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Orders orders;
 
-    private String payment_method; // COD, VNPay, Momo, Paypal...
+    private String paymentMethod; // COD, VNPay, Momo, Paypal...
     private Long amount;
     private String status; // pending, completed, failed
     private LocalDateTime paidAt;

@@ -1,5 +1,6 @@
 package com.example.ecommercebooksales.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 @Setter
 public class AuthorDTO {
     private Long authorId;
+    @NotBlank(message = "Tên tác giả không được để trống")
     private String authorName;
     private String biography;
 }

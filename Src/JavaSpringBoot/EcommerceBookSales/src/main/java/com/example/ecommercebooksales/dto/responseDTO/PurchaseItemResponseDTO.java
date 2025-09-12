@@ -9,4 +9,5 @@ public class PurchaseItemResponseDTO {
     private String bookTitle;   // để hiển thị trong báo cáo
     private Integer quantity;
     private Long unitPrice;     // giá nhập từng sách
+    private Long subtotal;  // quantity * unitPrice
 }

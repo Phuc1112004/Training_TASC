@@ -1,0 +1,48 @@
+package com.example.ecommercebooksales.controller;
+
+import com.example.ecommercebooksales.dto.requestDTO.OrderItemResquestDTO;
+import com.example.ecommercebooksales.dto.responseDTO.OrderItemResponseDTO;
+import com.example.ecommercebooksales.service.OrderItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/order-items")
+public class OrderItemController {
+
+    @Autowired
+    private OrderItemService orderItemService;
+
+    // Tạo mới OrderItem
+    @PostMapping
+    public ResponseEntity<OrderItemResponseDTO> createOrderItems(@RequestBody OrderItemResquestDTO request) {
+        OrderItemResponseDTO created = orderItemService.createOrderItem(request);
+        return ResponseEntity.ok(created);
+    }
+
+    // Lấy danh sách OrderItem theo orderId
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<List<OrderItemResponseDTO>> getItemsByOrderId(@PathVariable Long orderId) {
+        List<OrderItemResponseDTO> items = orderItemService.getItemsByOrderId(orderId);
+        return ResponseEntity.ok(items);
+    }
+
+    // Xóa OrderItem theo orderItemId
+    @DeleteMapping("/{orderItemId}")
+    public ResponseEntity<Void> deleteOrderItem(@PathVariable Long orderItemId) {
+        orderItemService.deleteOrderItem(orderItemId);
+        return ResponseEntity.noContent().build(); // HTTP 204
+    }
+
+    // Cập nhật số lượng OrderItem
+    @PutMapping("/{orderItemId}/quantity/{quantity}")
+    public ResponseEntity<OrderItemResponseDTO> updateQuantity(
+            @PathVariable Long orderItemId,
+            @PathVariable int quantity) {
+        OrderItemResponseDTO updated = orderItemService.updateOrderItemQuantity(orderItemId, quantity);
+        return ResponseEntity.ok(updated);
+    }
+}

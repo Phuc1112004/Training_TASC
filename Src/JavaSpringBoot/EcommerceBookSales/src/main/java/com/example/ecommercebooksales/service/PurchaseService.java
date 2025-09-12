@@ -1,8 +1,6 @@
 package com.example.ecommercebooksales.service;
 
 import com.example.ecommercebooksales.dto.requestDTO.PurchaseRequestDTO;
-import com.example.ecommercebooksales.dto.responseDTO.BookResponseDTO;
-import com.example.ecommercebooksales.dto.responseDTO.PurchaseItemResponseDTO;
 import com.example.ecommercebooksales.dto.responseDTO.PurchaseResponseDTO;
 import com.example.ecommercebooksales.entity.Purchase;
 import com.example.ecommercebooksales.repository.PurchaseRepository;
@@ -22,8 +20,8 @@ public class PurchaseService {
     // ---------------- CREATE ----------------
     public PurchaseResponseDTO createPurchase(PurchaseRequestDTO request) {
         Purchase purchase = new Purchase();
-        purchase.setSupplier_name(request.getSupplierName());
-        purchase.setPurchase_date(request.getPurchaseDate());
+        purchase.setSupplierName(request.getSupplierName());
+        purchase.setPurchaseDate(request.getPurchaseDate());
 
         Purchase saved = purchaseRepository.save(purchase);
         return convertToDTO(saved);
@@ -47,8 +45,8 @@ public class PurchaseService {
     public PurchaseResponseDTO updatePurchase(Long id, PurchaseRequestDTO request) {
         return purchaseRepository.findById(id)
                 .map(purchase ->{
-                   purchase.setSupplier_name(request.getSupplierName());
-                   purchase.setPurchase_date(request.getPurchaseDate());
+                   purchase.setSupplierName(request.getSupplierName());
+                   purchase.setPurchaseDate(request.getPurchaseDate());
 
                    Purchase updated = purchaseRepository.save(purchase);
                    return convertToDTO(updated);
@@ -65,10 +63,10 @@ public class PurchaseService {
     // ---------------- CONVERT ----------------
     private PurchaseResponseDTO convertToDTO(Purchase purchase){
         PurchaseResponseDTO dto = new PurchaseResponseDTO();
-        dto.setPurchaseId(purchase.getPurchase_id());
-        dto.setSupplierName(purchase.getSupplier_name());
-        dto.setPurchaseDate(purchase.getPurchase_date());
-        dto.setTotalCost(purchase.getTotal_cost());
+        dto.setPurchaseId(purchase.getPurchaseId());
+        dto.setSupplierName(purchase.getSupplierName());
+        dto.setPurchaseDate(purchase.getPurchaseDate());
+        dto.setTotalCost(purchase.getTotalCost());
         return dto;
     }
 }

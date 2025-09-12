@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long review_id;
+    private Long reviewId;
     private Integer rating; // 1-5
     private String comment;
     private LocalDateTime createdAt;

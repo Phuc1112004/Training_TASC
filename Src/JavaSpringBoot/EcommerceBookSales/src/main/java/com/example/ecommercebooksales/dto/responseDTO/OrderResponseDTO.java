@@ -9,6 +9,7 @@ import java.util.List;
 public class OrderResponseDTO {
     private Long orderId;
     private Long userId;
+    private String userName;
     private Long totalAmount;
     private String status;               // pending, paid, shipped...
     private String shippingAddress;
