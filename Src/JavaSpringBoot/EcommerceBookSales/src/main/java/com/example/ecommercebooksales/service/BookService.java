@@ -43,7 +43,7 @@ public class BookService {
         book.setStockQuantity(request.getStockQuantity());
         book.setDescription(request.getDescription());
         book.setImageUrl(request.getImageUrl());
-        book.setCreated_at(LocalDateTime.now());
+        book.setCreatedAt(LocalDateTime.now());
 
         // set author, publisher, category
         Author author = authorRepository.findById(request.getAuthorId())
@@ -125,7 +125,7 @@ public class BookService {
         dto.setStockQuantity(book.getStockQuantity());
         dto.setDescription(book.getDescription());
         dto.setImageUrl(book.getImageUrl());
-        dto.setCreatedAt(book.getCreated_at());
+        dto.setCreatedAt(book.getCreatedAt());
         return dto;
     }
 }

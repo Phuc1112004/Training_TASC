@@ -63,7 +63,7 @@ public class OrderItemService {
         long total = currentItems.stream()
                 .mapToLong(i -> i.getPrice() * i.getQuantity())
                 .sum();
-        order.setTotal_amount(total);
+        order.setTotalAmount(total);
 
         // 6️⃣ Lưu lại Order với tổng tiền mới
         orderRepository.save(order);

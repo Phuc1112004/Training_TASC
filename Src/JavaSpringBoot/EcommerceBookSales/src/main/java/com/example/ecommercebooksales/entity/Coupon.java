@@ -1,13 +1,15 @@
 package com.example.ecommercebooksales.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Getter
+@Setter
 @Table(name = "coupon")
 public class Coupon {
     @Id

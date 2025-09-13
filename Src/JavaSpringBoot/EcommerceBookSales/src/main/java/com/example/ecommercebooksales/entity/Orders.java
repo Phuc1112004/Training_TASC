@@ -13,9 +13,9 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    private Long total_amount;
+    private Long totalAmount;
     private String status;
-    private String shipping_address;
+    private String shippingAddress;
     private LocalDateTime createdAt;
 
     @ManyToOne

@@ -38,7 +38,7 @@ public class OrderService {
         Orders order = new Orders();
         order.setUsers(user);
         order.setStatus(request.getStatus());
-        order.setShipping_address(request.getShippingAddress());
+        order.setShippingAddress(request.getShippingAddress());
         order.setCreatedAt(request.getCreatedAt());
         order.setOrderItems(new ArrayList<>()); // khởi tạo list
 
@@ -62,7 +62,7 @@ public class OrderService {
         long total = order.getOrderItems().stream()
                 .mapToLong(i -> i.getPrice() * i.getQuantity())
                 .sum();
-        order.setTotal_amount(total);
+        order.setTotalAmount(total);
 
         // Lưu đơn hàng (cả orderItems tự động lưu nhờ cascade)
         Orders savedOrder = orderRepository.save(order);
@@ -105,9 +105,9 @@ public class OrderService {
     private OrderResponseDTO convertToDTO(Orders order) {
         OrderResponseDTO dto = new OrderResponseDTO();
         dto.setOrderId(order.getOrderId());
-        dto.setTotalAmount(order.getTotal_amount());
+        dto.setTotalAmount(order.getTotalAmount());
         dto.setStatus(order.getStatus());
-        dto.setShippingAddress(order.getShipping_address());
+        dto.setShippingAddress(order.getShippingAddress());
         dto.setCreatedAt(order.getCreatedAt());
 
         if (order.getUsers() != null) {

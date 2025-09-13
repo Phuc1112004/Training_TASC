@@ -24,7 +24,7 @@ public class Books {
     private Integer stockQuantity;
     private String description;
     private String imageUrl;
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "author_id")

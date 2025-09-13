@@ -13,7 +13,7 @@ public class PurchaseItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long purchaseItemId;
     private int quantity;
-    private long unitPrice;
+    private Long unitPrice;
 
     @ManyToOne
     @JoinColumn(name = "purchase_id")
