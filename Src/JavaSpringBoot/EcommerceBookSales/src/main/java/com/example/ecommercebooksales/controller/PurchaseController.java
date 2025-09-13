@@ -4,6 +4,7 @@ import com.example.ecommercebooksales.dto.requestDTO.PurchaseRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.PurchaseResponseDTO;
 import com.example.ecommercebooksales.service.PurchaseService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,17 +18,20 @@ public class PurchaseController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PurchaseResponseDTO> createPurchase(@RequestBody PurchaseRequestDTO request) {
         PurchaseResponseDTO createPurchase = purchaseService.createPurchase(request);
         return ResponseEntity.ok(createPurchase);
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PurchaseResponseDTO>> getAllPurchases() {
         return ResponseEntity.ok(purchaseService.getAllPurchase());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PurchaseResponseDTO> getBookById(@PathVariable Long id) {
         PurchaseResponseDTO book = purchaseService.getPurchaseById(id);
         if (book == null) return ResponseEntity.notFound().build();
@@ -36,6 +40,7 @@ public class PurchaseController {
 
     // ---------------- UPDATE ----------------
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PurchaseResponseDTO> updateBook(@PathVariable Long id,
                                                       @RequestBody PurchaseRequestDTO request) {
         PurchaseResponseDTO updatedBook = purchaseService.updatePurchase(id, request);
@@ -45,6 +50,7 @@ public class PurchaseController {
 
     // ---------------- DELETE ----------------
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         boolean deleted = purchaseService.deletePurhchase(id);
         if (!deleted) return ResponseEntity.notFound().build();

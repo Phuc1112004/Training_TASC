@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class PurchaseItemController {
 
     // ---------------- CREATE ----------------
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PurchaseItemResponseDTO> createPurchaseItem(
             @RequestBody @Valid PurchaseItemRequestDTO request) {
         PurchaseItemResponseDTO response = purchaseItemService.createPurchaseItem(request);
@@ -28,6 +30,7 @@ public class PurchaseItemController {
 
     // ---------------- READ (list by purchase) ----------------
     @GetMapping("/purchase/{purchaseId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PurchaseItemResponseDTO>> getItemsByPurchase(
             @PathVariable Long purchaseId) {
         List<PurchaseItemResponseDTO> items = purchaseItemService.getItemsByPurchaseId(purchaseId);
@@ -36,6 +39,7 @@ public class PurchaseItemController {
 
     // ---------------- UPDATE ----------------
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PurchaseItemResponseDTO> updatePurchaseItem(
             @PathVariable Long id,
             @RequestBody @Valid PurchaseItemRequestDTO request) {
@@ -45,6 +49,7 @@ public class PurchaseItemController {
 
     // ---------------- DELETE ----------------
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletePurchaseItem(@PathVariable Long id) {
         boolean deleted = purchaseItemService.deletePurchaseItem(id);
         if (deleted) {

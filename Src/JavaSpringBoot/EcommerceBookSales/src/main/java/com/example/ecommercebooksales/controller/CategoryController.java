@@ -4,6 +4,7 @@ package com.example.ecommercebooksales.controller;
 import com.example.ecommercebooksales.dto.CategoryDTO;
 import com.example.ecommercebooksales.service.CategoryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,17 +19,20 @@ public class CategoryController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryDTO> createCategories(@RequestBody CategoryDTO request) {
         CategoryDTO createCategory = categoryService.createCategory(request);
         return ResponseEntity.ok(createCategory);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategory());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         CategoryDTO category = categoryService.getCategoryById(id);
         if (category == null) return ResponseEntity.notFound().build();
@@ -37,6 +41,7 @@ public class CategoryController {
 
     // ---------------- UPDATE ----------------
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryDTO> updateCategories(@PathVariable Long id,
                                                    @RequestBody CategoryDTO request) {
         CategoryDTO updatedCategory = categoryService.updateCategory(id, request);
@@ -46,6 +51,7 @@ public class CategoryController {
 
     // ---------------- DELETE ----------------
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCategories(@PathVariable Long id) {
         boolean deleted = categoryService.deleteCategory(id);
         if (!deleted) return ResponseEntity.notFound().build();
