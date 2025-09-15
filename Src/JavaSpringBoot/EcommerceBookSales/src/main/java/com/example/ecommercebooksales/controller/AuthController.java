@@ -40,7 +40,7 @@ public class AuthController {
     // Đăng ký
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+        if (userRepository.findByUserName(request.getUserName()).isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new RegisterResponse(
@@ -52,7 +52,7 @@ public class AuthController {
         }
 
         Users user = new Users();
-        user.setUsername(request.getUsername());
+        user.setUserName(request.getUserName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
@@ -63,7 +63,7 @@ public class AuthController {
 
         RegisterResponse.UserData userData = new RegisterResponse.UserData(
                 savedUser.getUserId(),
-                savedUser.getUsername(),
+                savedUser.getUserName(),
                 savedUser.getEmail(),
                 savedUser.getPhone(),
                 savedUser.getRole()
@@ -86,7 +86,7 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
+                        request.getUserName(),
                         request.getPassword()
                 )
         );
@@ -121,9 +121,9 @@ public class AuthController {
         }
 
         String username = jwtUtil.extractUsername(refreshToken);
-        UserDetails userDetails = userRepository.findByUsername(username)
+        UserDetails userDetails = userRepository.findByUserName(username)
                 .map(user -> org.springframework.security.core.userdetails.User
-                        .withUsername(user.getUsername())
+                        .withUsername(user.getUserName())
                         .password(user.getPassword())
                         .roles(user.getRole()) // phải có prefix ROLE_ trong JwtAuthFilter
                         .build())

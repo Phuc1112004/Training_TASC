@@ -32,7 +32,7 @@ public class UserController {
     @GetMapping("/profile")
     public Users getProfile(Authentication authentication) {
         String username = authentication.getName();
-        return userRepository.findByUsername(username)
+        return userRepository.findByUserName(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

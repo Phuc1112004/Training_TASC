@@ -112,7 +112,7 @@ public class OrderService {
 
         if (order.getUsers() != null) {
             dto.setUserId(order.getUsers().getUserId());
-            dto.setUserName(order.getUsers().getUsername());
+            dto.setUserName(order.getUsers().getUserName());
         }
 
         if (order.getOrderItems() != null) {

@@ -6,12 +6,17 @@ import com.example.ecommercebooksales.entity.Author;
 import com.example.ecommercebooksales.entity.Books;
 import com.example.ecommercebooksales.entity.Category;
 import com.example.ecommercebooksales.entity.Publisher;
-import com.example.ecommercebooksales.repository.AuthorRepository;
-import com.example.ecommercebooksales.repository.BookRepository;
-import com.example.ecommercebooksales.repository.CategoryRepository;
-import com.example.ecommercebooksales.repository.PublisherRepository;
+import com.example.ecommercebooksales.repository.*;
+import com.example.ecommercebooksales.specification.BookSpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +28,10 @@ public class BookService {
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
     private final CategoryRepository categoryRepository;
+
+    @Autowired
+    private BookJdbcRepository bookJdbcRepository;
+
 
     public BookService(BookRepository bookRepository,
                        AuthorRepository authorRepository,
@@ -116,9 +125,12 @@ public class BookService {
         BookResponseDTO dto = new BookResponseDTO();
         dto.setBookId(book.getBookId());
         dto.setTitle(book.getTitle());
-        dto.setAuthorName(book.getAuthor().getAuthorName());
-        dto.setPublisherName(book.getPublisher().getPublisherName());
-        dto.setCategoryName(book.getCategory().getCategoryName());
+
+        // Kiểm tra null trước khi lấy tên
+        dto.setAuthorName(book.getAuthor() != null ? book.getAuthor().getAuthorName() : null);
+        dto.setPublisherName(book.getPublisher() != null ? book.getPublisher().getPublisherName() : null);
+        dto.setCategoryName(book.getCategory() != null ? book.getCategory().getCategoryName() : null);
+
         dto.setImportPrice(book.getImportPrice());
         dto.setMarketPrice(book.getMarketPrice());
         dto.setSalePrice(book.getSalePrice());
@@ -126,6 +138,26 @@ public class BookService {
         dto.setDescription(book.getDescription());
         dto.setImageUrl(book.getImageUrl());
         dto.setCreatedAt(book.getCreatedAt());
+
         return dto;
+    }
+
+    // Lấy tất cả sách (JdbcTemplate)
+    public List<BookResponseDTO> getAllBooksJdbc() {
+        return bookJdbcRepository.getAllBoosJdbc();
+    }
+
+    // Dùng Specification để tìm kiếm Book
+    public List<BookResponseDTO> searchBooks(String title, Long authorId, Long categoryId, Long minPrice, Long maxPrice) {
+        Specification<Books> spec = BookSpecification.hasTitle(title)
+                .and(BookSpecification.hasAuthor(authorId))
+                .and(BookSpecification.hasCategory(categoryId))
+                .and(BookSpecification.priceBetween(minPrice, maxPrice));
+
+        List<Books> books = bookRepository.findAll(spec);
+
+        return books.stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 }

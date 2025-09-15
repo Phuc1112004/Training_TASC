@@ -4,6 +4,7 @@ import com.example.ecommercebooksales.dto.PublisherDTO;
 import com.example.ecommercebooksales.entity.Publisher;
 import com.example.ecommercebooksales.repository.PublisherRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,13 +21,13 @@ public class PublisherService {
     // ---------------- CREATE ----------------
     public PublisherDTO createPublisher(PublisherDTO request) {
         Publisher publisher = new Publisher();
-        publisher.setPublisherName(request.getPublisher_name());
+        publisher.setPublisherName(request.getPublisherName());
         publisher.setAddress(request.getAddress());
         publisher.setPhone(request.getPhone());
         publisher.setEmail(request.getEmail());
         publisher.setWebsite(request.getWebsite());
         publisher.setCountry(request.getCountry());
-        publisher.setFoundedYear(request.getFounded_year());
+        publisher.setFoundedYear(request.getFoundedYear());
         publisher.setDescription(request.getDescription());
 
         Publisher saved = publisherRepository.save(publisher);
@@ -51,13 +52,13 @@ public class PublisherService {
     public PublisherDTO updatePublisher(Long id, PublisherDTO request) {
         return publisherRepository.findById(id)
                 .map(publisher ->{
-                    publisher.setPublisherName(request.getPublisher_name());
+                    publisher.setPublisherName(request.getPublisherName());
                     publisher.setAddress(request.getAddress());
                     publisher.setPhone(request.getPhone());
                     publisher.setEmail(request.getEmail());
                     publisher.setWebsite(request.getWebsite());
                     publisher.setCountry(request.getCountry());
-                    publisher.setFoundedYear(request.getFounded_year());
+                    publisher.setFoundedYear(request.getFoundedYear());
                     publisher.setDescription(request.getDescription());
 
                     Publisher updated = publisherRepository.save(publisher);
@@ -75,15 +76,41 @@ public class PublisherService {
     // ---------------- CONVERT ----------------
     private PublisherDTO convertToDTO(Publisher publisher){
         PublisherDTO dto = new PublisherDTO();
-        dto.setPublisher_id(publisher.getPublisherId());
-        dto.setPublisher_name(publisher.getPublisherName());
+        dto.setPublisherId(publisher.getPublisherId());
+        dto.setPublisherName(publisher.getPublisherName());
         dto.setAddress(publisher.getAddress());
         dto.setPhone(publisher.getPhone());
         dto.setEmail(publisher.getEmail());
         dto.setWebsite(publisher.getWebsite());
         dto.setCountry(publisher.getCountry());
-        dto.setFounded_year(publisher.getFoundedYear());
+        dto.setFoundedYear(publisher.getFoundedYear());
         dto.setDescription(publisher.getDescription());
         return dto;
+    }
+
+// Dùng store Procedure
+    // Lấy danh sách publisher theo tên
+    @Transactional
+    public List<PublisherDTO> getPublisherByNameDTO(String name) {
+        return publisherRepository.getPublisherByName(name)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    // Thêm publisher mới
+    @Transactional(readOnly = true)
+    public void addPublisher(Publisher publisher) {
+        publisherRepository.addPublisher(
+                publisher.getPublisherName(),
+                publisher.getAddress(),
+                publisher.getPhone(),
+                publisher.getEmail(),
+                publisher.getWebsite(),
+                publisher.getCountry(),
+                publisher.getFoundedYear(),
+                publisher.getDescription()
+        );
     }
 }

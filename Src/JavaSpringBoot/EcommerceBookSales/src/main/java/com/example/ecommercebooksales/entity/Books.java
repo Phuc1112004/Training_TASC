@@ -1,10 +1,9 @@
 package com.example.ecommercebooksales.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,6 +11,8 @@ import java.util.List;
 @Data
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "books")
 public class Books {
     @Id
@@ -49,4 +50,19 @@ public class Books {
 
     @OneToMany(mappedBy = "books")
     private List<Review> reviews;
+
+    public Books(Long bookId, String title, long authorId, long publisherId, long categoryId,
+                 double importPrice, double marketPrice, double salePrice,
+                 int stockQuantity, String description, String imageUrl, Timestamp createdAt) {
+        this.bookId = bookId;
+        this.title = title;
+        this.importPrice = (long) importPrice;
+        this.marketPrice = (long) marketPrice;
+        this.salePrice = (long) salePrice;
+        this.stockQuantity = stockQuantity;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.createdAt = createdAt.toLocalDateTime();
+    }
+
 }

@@ -22,9 +22,9 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // ✅ ADMIN
-        if (userRepository.findByUsername("admin").isEmpty()) {
+        if (userRepository.findByUserName("admin").isEmpty()) {
             Users admin = new Users();
-            admin.setUsername("admin");
+            admin.setUserName("admin");
             admin.setPassword(passwordEncoder.encode("admin")); // mật khẩu mặc định: admin
             admin.setEmail("admin@gmail.com");
             admin.setPhone("0123456789");
@@ -36,9 +36,9 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         // ✅ CUSTOMER 1
-        if (userRepository.findByUsername("customer").isEmpty()) {
+        if (userRepository.findByUserName("customer").isEmpty()) {
             Users customer1 = new Users();
-            customer1.setUsername("customer");
+            customer1.setUserName("customer");
             customer1.setPassword(passwordEncoder.encode("123456"));
             customer1.setEmail("customer@gmail.com");
             customer1.setPhone("0987654321");

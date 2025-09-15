@@ -12,9 +12,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class PublisherDTO {
-    private Long publisher_id;
+    private Long publisherId;
     @NotBlank(message = "Tên nhà xuất bản không được để trống")
-    private String publisher_name;
+    private String publisherName;
     private String address;
     @Pattern(regexp = "^\\+?[0-9]{9,15}$", message = "Số điện thoại không hợp lệ")
     private String phone;
@@ -25,6 +25,6 @@ public class PublisherDTO {
     private String country;
     @Min(value = 1000, message = "Năm thành lập không hợp lệ")
     @Max(value = 2100, message = "Năm thành lập không hợp lệ")
-    private LocalDate founded_year;
+    private LocalDate foundedYear;
     private String description;
 }
