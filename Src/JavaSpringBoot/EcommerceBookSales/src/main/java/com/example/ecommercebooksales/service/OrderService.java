@@ -1,5 +1,6 @@
 package com.example.ecommercebooksales.service;
 
+import com.example.ecommercebooksales.dto.requestDTO.OrderItemResquestDTO;
 import com.example.ecommercebooksales.dto.requestDTO.OrderRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.OrderItemResponseDTO;
 import com.example.ecommercebooksales.dto.responseDTO.OrderResponseDTO;
@@ -7,77 +8,91 @@ import com.example.ecommercebooksales.entity.Books;
 import com.example.ecommercebooksales.entity.OrderItem;
 import com.example.ecommercebooksales.entity.Orders;
 import com.example.ecommercebooksales.entity.Users;
+import com.example.ecommercebooksales.exception.ResourceNotFoundException;
 import com.example.ecommercebooksales.repository.BookRepository;
+import com.example.ecommercebooksales.repository.OrderItemRepository;
 import com.example.ecommercebooksales.repository.OrderRepository;
 import com.example.ecommercebooksales.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class OrderService {
 
-    @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-    // ✅ Tạo đơn hàng mới
+    private final OrderItemRepository orderItemRepository;
+
+    public OrderService(OrderRepository orderRepository,
+                        UserRepository userRepository,
+                        OrderItemRepository orderItemRepository,
+                        BookRepository bookRepository) {
+        this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.bookRepository = bookRepository;
+    }
+
+    // Tạo đơn hàng mới
+    @Transactional
     public OrderResponseDTO createOrder(OrderRequestDTO request) {
-        // Lấy user
         Users user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // Tạo đơn hàng mới
         Orders order = new Orders();
         order.setUsers(user);
-        order.setStatus(request.getStatus());
         order.setShippingAddress(request.getShippingAddress());
-        order.setCreatedAt(request.getCreatedAt());
-        order.setOrderItems(new ArrayList<>()); // khởi tạo list
+        order.setStatus("pending");
 
-        // Tạo order items
-        if (request.getListOrderItems() != null) {
-            for (var itemReq : request.getListOrderItems()) {
-                Books book = bookRepository.findById(itemReq.getBookId())
-                        .orElseThrow(() -> new RuntimeException("Book not found"));
+        List<OrderItem> items = new ArrayList<>();
+        long totalAmount = 0L;
 
-                OrderItem item = new OrderItem();
-                item.setOrders(order); // gán quan hệ 1 chiều
-                item.setBooks(book);
-                item.setQuantity(itemReq.getQuantity());
-                item.setPrice(book.getSalePrice());
+        for (OrderItemResquestDTO itemReq : request.getListOrderItems()) {
+            Books book = bookRepository.findById(itemReq.getBookId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + itemReq.getBookId()));
 
-                order.getOrderItems().add(item);
+            if (book.getStockQuantity() < itemReq.getQuantity()) {
+                throw new RuntimeException("Not enough stock for book: " + book.getTitle());
             }
+
+            book.setStockQuantity(book.getStockQuantity() - itemReq.getQuantity());
+
+            OrderItem item = new OrderItem();
+            item.setOrders(order);
+            item.setBooks(book);
+            item.setQuantity(itemReq.getQuantity());
+            item.setPrice(itemReq.getPrice());
+
+            items.add(item); // Thêm vào list
+            totalAmount += itemReq.getPrice() * itemReq.getQuantity();
         }
 
-        // Tính tổng tiền
-        long total = order.getOrderItems().stream()
-                .mapToLong(i -> i.getPrice() * i.getQuantity())
-                .sum();
-        order.setTotalAmount(total);
+        order.setOrderItems(items); // Gán list cho order
+        order.setTotalAmount(totalAmount);
 
-        // Lưu đơn hàng (cả orderItems tự động lưu nhờ cascade)
         Orders savedOrder = orderRepository.save(order);
 
         return convertToDTO(savedOrder);
     }
 
-    // ✅ Lấy đơn hàng theo ID
+
+
+    // Lấy đơn hàng theo ID
     public OrderResponseDTO getOrderById(Long orderId) {
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         return convertToDTO(order);
     }
 
-    // ✅ Lấy tất cả đơn hàng
+    // Lấy tất cả đơn hàng
     public List<OrderResponseDTO> getAllOrders() {
         return orderRepository.findAll()
                 .stream()
@@ -85,14 +100,14 @@ public class OrderService {
                 .toList();
     }
 
-    // ✅ Xóa đơn hàng
+    // Xóa đơn hàng
     public void deleteOrder(Long orderId) {
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         orderRepository.delete(order);
     }
 
-    // ✅ Cập nhật trạng thái đơn hàng
+    // Cập nhật trạng thái đơn hàng
     public OrderResponseDTO updateOrderStatus(Long orderId, String status) {
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -101,14 +116,14 @@ public class OrderService {
         return convertToDTO(updated);
     }
 
-    // ✅ Convert entity → DTO
+    // Convert entity → DTO
     private OrderResponseDTO convertToDTO(Orders order) {
         OrderResponseDTO dto = new OrderResponseDTO();
         dto.setOrderId(order.getOrderId());
         dto.setTotalAmount(order.getTotalAmount());
         dto.setStatus(order.getStatus());
         dto.setShippingAddress(order.getShippingAddress());
-        dto.setCreatedAt(order.getCreatedAt());
+        dto.setCreatedAt(LocalDateTime.now());
 
         if (order.getUsers() != null) {
             dto.setUserId(order.getUsers().getUserId());
@@ -130,7 +145,6 @@ public class OrderService {
                     }).toList()
             );
         }
-
         return dto;
     }
 }

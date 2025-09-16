@@ -2,11 +2,18 @@ package com.example.ecommercebooksales.controller;
 
 import com.example.ecommercebooksales.dto.requestDTO.PurchaseRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.PurchaseResponseDTO;
+import com.example.ecommercebooksales.entity.Purchase;
 import com.example.ecommercebooksales.service.PurchaseService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -26,9 +33,15 @@ public class PurchaseController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<PurchaseResponseDTO>> getAllPurchases() {
-        return ResponseEntity.ok(purchaseService.getAllPurchase());
+    public ResponseEntity<Page<PurchaseResponseDTO>> getAllPurchases(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("purchaseDate").descending());
+        return ResponseEntity.ok(purchaseService.getAllPurchase(pageable));
     }
+
+
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -52,8 +65,27 @@ public class PurchaseController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        boolean deleted = purchaseService.deletePurhchase(id);
+        boolean deleted = purchaseService.deletePurchase(id);
         if (!deleted) return ResponseEntity.notFound().build();
         return ResponseEntity.noContent().build(); // 204
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<PurchaseResponseDTO>> search(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "purchaseDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir
+    ) {
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<PurchaseResponseDTO> result = purchaseService.searchByDate(startDate, endDate, pageable);
+        return ResponseEntity.ok(result);
+    }
+
 }

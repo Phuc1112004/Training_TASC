@@ -22,7 +22,7 @@ public class Orders {
     @JoinColumn(name = "user_id")
     private Users users;
 
-    @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItem> orderItems;
 
     @OneToMany(mappedBy = "orders")

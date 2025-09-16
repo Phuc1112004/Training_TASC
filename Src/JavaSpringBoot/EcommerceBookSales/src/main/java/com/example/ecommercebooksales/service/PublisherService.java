@@ -98,7 +98,6 @@ public class PublisherService {
                 .collect(Collectors.toList());
     }
 
-
     // Thêm publisher mới
     @Transactional(readOnly = true)
     public void addPublisher(Publisher publisher) {

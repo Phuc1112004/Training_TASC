@@ -19,6 +19,6 @@ public class Purchase {
     private Long totalCost;
     private LocalDate purchaseDate;
 
-    @OneToMany(mappedBy = "purchase")
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PurchaseItem> items;
 }
