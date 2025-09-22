@@ -4,9 +4,6 @@ import com.example.ecommercebooksales.dto.requestDTO.BookRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.BookResponseDTO;
 import com.example.ecommercebooksales.service.BookService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -86,12 +83,12 @@ public class BookController {
     @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<List<BookResponseDTO>> searchBooks(
             @RequestParam(required = false) String title,
-            @RequestParam(required = false) Long authorId,
-            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String authorName,
+            @RequestParam(required = false) String categoryName,
             @RequestParam(required = false) Long minPrice,
             @RequestParam(required = false) Long maxPrice
     ) {
-        List<BookResponseDTO> books = bookService.searchBooks(title, authorId, categoryId, minPrice, maxPrice);
+        List<BookResponseDTO> books = bookService.searchBooks(title, authorName, categoryName, minPrice, maxPrice);
         return ResponseEntity.ok(books);
     }
 }

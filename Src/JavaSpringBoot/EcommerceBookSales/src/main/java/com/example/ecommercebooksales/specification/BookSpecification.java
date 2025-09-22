@@ -11,14 +11,14 @@ public class BookSpecification {
                 title == null ? null : cb.like(root.get("title"), "%" + title + "%");
     }
 
-    public static Specification<Books> hasAuthor(Long authorId) {
+    public static Specification<Books> hasAuthorName(String authorName) {
         return (root, query, cb) ->
-                authorId == null ? null : cb.equal(root.get("author").get("authorId"), authorId);
+                authorName == null ? null : cb.like(cb.lower(root.get("author").get("authorName")), "%" + authorName.toLowerCase() + "%");
     }
 
-    public static Specification<Books> hasCategory(Long categoryId) {
+    public static Specification<Books> hasCategoryName(String categoryName) {
         return (root, query, cb) ->
-                categoryId == null ? null : cb.equal(root.get("category").get("categoryId"), categoryId);
+                categoryName == null ? null : cb.like(cb.lower(root.get("category").get("categoryName")), "%" + categoryName.toLowerCase() + "%");
     }
 
     public static Specification<Books> priceBetween(Long minPrice, Long maxPrice) {

@@ -161,10 +161,10 @@ public class BookService {
     }
 
     // Dùng Specification để tìm kiếm Book
-    public List<BookResponseDTO> searchBooks(String title, Long authorId, Long categoryId, Long minPrice, Long maxPrice) {
+    public List<BookResponseDTO> searchBooks(String title, String authorName, String categoryName, Long minPrice, Long maxPrice) {
         Specification<Books> spec = BookSpecification.hasTitle(title)
-                .and(BookSpecification.hasAuthor(authorId))
-                .and(BookSpecification.hasCategory(categoryId))
+                .and(BookSpecification.hasAuthorName(authorName))
+                .and(BookSpecification.hasCategoryName(categoryName))
                 .and(BookSpecification.priceBetween(minPrice, maxPrice));
 
         List<Books> books = bookRepository.findAll(spec);
