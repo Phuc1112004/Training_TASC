@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Getter
@@ -13,6 +14,7 @@ public class BookResponseDTO {
     private Long bookId;
     private String title;
     private String authorName;
+    private Long authorId;
     private String publisherName;
     private String categoryName;
     private Long importPrice;
@@ -22,4 +24,6 @@ public class BookResponseDTO {
     private String description;
     private String imageUrl;
     private LocalDateTime createdAt;
+    private Long bookNewId;
+    private List<BookResponseDTO> bookResponseDTOList;
 }

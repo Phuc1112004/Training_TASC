@@ -2,46 +2,33 @@ package com.example.ecommercebooksales.service;
 
 import com.example.ecommercebooksales.dto.requestDTO.BookRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.BookResponseDTO;
-import com.example.ecommercebooksales.entity.Author;
-import com.example.ecommercebooksales.entity.Books;
-import com.example.ecommercebooksales.entity.Category;
-import com.example.ecommercebooksales.entity.Publisher;
+import com.example.ecommercebooksales.entity.*;
 import com.example.ecommercebooksales.repository.*;
 import com.example.ecommercebooksales.specification.BookSpecification;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
     private final CategoryRepository categoryRepository;
+    private final OrderItemRepository orderItemRepository;
 
     @Autowired
     private BookJdbcRepository bookJdbcRepository;
 
 
-    public BookService(BookRepository bookRepository,
-                       AuthorRepository authorRepository,
-                       PublisherRepository publisherRepository,
-                       CategoryRepository categoryRepository) {
-        this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
-        this.publisherRepository = publisherRepository;
-        this.categoryRepository = categoryRepository;
-    }
     // ---------------- CREATE ----------------
     public BookResponseDTO createBook(BookRequestDTO request) {
         Books book = new Books();
@@ -53,6 +40,7 @@ public class BookService {
         book.setDescription(request.getDescription());
         book.setImageUrl(request.getImageUrl());
         book.setCreatedAt(LocalDateTime.now());
+        book.setBookNewId(request.getBookId());
 
         // set author, publisher, category
         Author author = authorRepository.findById(request.getAuthorId())
@@ -66,8 +54,18 @@ public class BookService {
         book.setPublisher(publisher);
         book.setCategory(category);
 
-        Books saved = bookRepository.save(book);
-        return convertToDTO(saved);
+        bookRepository.save(book);
+        book.setBookNewId(book.getBookId());
+        if(request.getBookId() != null){
+            List<Books> booksList = bookRepository.findByBookNewId(request.getBookId());
+            for (Books item : booksList) {
+                item.setBookNewId(book.getBookId());
+            }
+            bookRepository.saveAll(booksList);
+        }
+        bookRepository.save(book);
+
+        return convertToDTO(book);
     }
 
     // ---------------- READ ----------------
@@ -78,10 +76,19 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
+    // chi tiết sách có kèm theo gọi ý những sách liên quan có chung tác giả
     public BookResponseDTO getBookById(Long id) {
-        return bookRepository.findById(id)
-                .map(this::convertToDTO)
-                .orElse(null);
+        BookResponseDTO responseDTO = convertToDTO(bookRepository.findById(id).get());
+        if (responseDTO.getAuthorId()!= null){
+            Optional<Author> author = authorRepository.findById(responseDTO.getAuthorId());
+            if(author.isPresent()){
+                List<BookResponseDTO> listAuthor = bookRepository.findByAuthor(author.get()).stream()
+                        .map(this::convertToDTO)
+                        .collect(Collectors.toList());
+                responseDTO.setBookResponseDTOList(listAuthor);
+            }
+        }
+        return responseDTO;
     }
 
     // ---------------- UPDATE ----------------
@@ -115,9 +122,13 @@ public class BookService {
 
     // ---------------- DELETE ----------------
     public boolean deleteBook(Long id) {
-        if (!bookRepository.existsById(id)) return false;
-        bookRepository.deleteById(id);
-        return true;
+        List<Books> books = bookRepository.findByBookNewIdOrBookId(id, id);
+        List<Items> items = orderItemRepository.findAllByBooksIn(books);
+        if (items.isEmpty()) {
+            bookRepository.deleteById(id);
+            return true;
+        }else
+            return false;
     }
 
     // ---------------- CONVERT ----------------
@@ -128,6 +139,7 @@ public class BookService {
 
         // Kiểm tra null trước khi lấy tên
         dto.setAuthorName(book.getAuthor() != null ? book.getAuthor().getAuthorName() : null);
+        dto.setAuthorId(book.getAuthor() != null ? book.getAuthor().getAuthorId() : null);
         dto.setPublisherName(book.getPublisher() != null ? book.getPublisher().getPublisherName() : null);
         dto.setCategoryName(book.getCategory() != null ? book.getCategory().getCategoryName() : null);
 
@@ -138,6 +150,7 @@ public class BookService {
         dto.setDescription(book.getDescription());
         dto.setImageUrl(book.getImageUrl());
         dto.setCreatedAt(book.getCreatedAt());
+        dto.setBookNewId(book.getBookNewId());
 
         return dto;
     }

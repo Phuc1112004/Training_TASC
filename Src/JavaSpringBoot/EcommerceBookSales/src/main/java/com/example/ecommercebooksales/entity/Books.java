@@ -26,6 +26,7 @@ public class Books {
     private String description;
     private String imageUrl;
     private LocalDateTime createdAt;
+    private Long bookNewId;     //  sách mới nhất của bản chỉnh sửa
 
     @ManyToOne
     @JoinColumn(name = "author_id")
@@ -42,16 +43,16 @@ public class Books {
     @OneToMany(mappedBy = "books")
     private List<PurchaseItem> purchaseItems;
 
-    @OneToMany(mappedBy = "books")
-    private List<CartItem> cartItems;
+//    @OneToMany(mappedBy = "books")
+//    private List<CartItem> cartItems;
 
     @OneToMany(mappedBy = "books")
-    private List<OrderItem> orderItems;
+    private List<Items> items;
 
     @OneToMany(mappedBy = "books")
     private List<Review> reviews;
 
-    public Books(Long bookId, String title, long authorId, long publisherId, long categoryId,
+    public Books(Long bookId, String title,
                  double importPrice, double marketPrice, double salePrice,
                  int stockQuantity, String description, String imageUrl, Timestamp createdAt) {
         this.bookId = bookId;

@@ -3,6 +3,7 @@ package com.example.ecommercebooksales.controller;
 import com.example.ecommercebooksales.dto.requestDTO.OrderRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.OrderResponseDTO;
 import com.example.ecommercebooksales.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class OrderController {
     // Tạo đơn hàng
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
-    public OrderResponseDTO createOrders(@RequestBody OrderRequestDTO request) {
+    public OrderResponseDTO createOrders(@RequestBody @Valid OrderRequestDTO request) {
         return orderService.createOrder(request);
     }
 

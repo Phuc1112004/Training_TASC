@@ -2,6 +2,7 @@ package com.example.ecommercebooksales.controller;
 
 import com.example.ecommercebooksales.entity.Publisher;
 import com.example.ecommercebooksales.service.PublishersService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +19,7 @@ public class PublishersController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> create(@RequestBody Publisher publisher) {
+    public ResponseEntity<String> create(@RequestBody @Valid Publisher publisher) {
         publishersService.save(publisher);
         return ResponseEntity.ok("Publisher created successfully!");
     }
@@ -37,7 +38,7 @@ public class PublishersController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody Publisher publisher) {
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody @Valid Publisher publisher) {
         publisher.setPublisherId(id);
         publishersService.update(publisher);
         return ResponseEntity.ok("Publisher updated successfully!");

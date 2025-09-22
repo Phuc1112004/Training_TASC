@@ -43,8 +43,8 @@ public class Users {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createAt;
 
-    @OneToMany(mappedBy = "user")
-    private List<Cart> carts;
+//    @OneToMany(mappedBy = "user")
+//    private List<Cart> carts;
 
     @OneToMany(mappedBy = "users")
     private List<Orders> orders;

@@ -7,6 +7,7 @@ import com.example.ecommercebooksales.dto.responseDTO.LoginResponse;
 import com.example.ecommercebooksales.dto.responseDTO.RegisterResponse;
 import com.example.ecommercebooksales.entity.Users;
 import com.example.ecommercebooksales.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class AuthController {
 
     // Đăng ký
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         if (userRepository.findByUserName(request.getUserName()).isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -83,7 +84,7 @@ public class AuthController {
 
     // Đăng nhập
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUserName(),

@@ -21,7 +21,7 @@ public class JwtUtil {
     private final Key SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
     // Thời gian sống (ms)
-    private final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 60;   // 1h
+    private final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 60 * 24;   // 1 ngày
     private final long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 100; // 100 ngày
 
     // Tạo Access Token

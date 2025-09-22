@@ -4,6 +4,7 @@ import com.example.ecommercebooksales.dto.requestDTO.PurchaseRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.PurchaseResponseDTO;
 import com.example.ecommercebooksales.entity.Purchase;
 import com.example.ecommercebooksales.service.PurchaseService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ public class PurchaseController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PurchaseResponseDTO> createPurchase(@RequestBody PurchaseRequestDTO request) {
+    public ResponseEntity<PurchaseResponseDTO> createPurchase(@RequestBody @Valid PurchaseRequestDTO request) {
         PurchaseResponseDTO createPurchase = purchaseService.createPurchase(request);
         return ResponseEntity.ok(createPurchase);
     }
@@ -55,7 +56,7 @@ public class PurchaseController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PurchaseResponseDTO> updateBook(@PathVariable Long id,
-                                                      @RequestBody PurchaseRequestDTO request) {
+                                                      @RequestBody @Valid PurchaseRequestDTO request) {
         PurchaseResponseDTO updatedBook = purchaseService.updatePurchase(id, request);
         if (updatedBook == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(updatedBook);

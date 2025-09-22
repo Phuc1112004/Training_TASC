@@ -9,10 +9,12 @@ import lombok.Data;
 public class PurchaseItemRequestDTO {
     @NotNull
     private Long purchaseId;
-    @NotNull
-    private Long bookId;        // id sách nhập
-    @Positive
-    private Integer quantity;   // số lượng nhập
-    @PositiveOrZero
+    @NotNull(message = "Mã sách không được để trống")
+    private Long bookId;       // id sách nhập
+    @NotNull(message = "Số lượng không được để trống")
+    @Positive(message = "Số lượng phải lớn hơn 0")
+    private Integer quantity;    // số lượng nhập
+    @NotNull(message = "Đơn giá không được để trống")
+    @PositiveOrZero(message = "Đơn giá phải >= 0")
     private Long unitPrice;     // giá nhập tại thời điểm mua
 }

@@ -3,6 +3,7 @@ package com.example.ecommercebooksales.controller;
 import com.example.ecommercebooksales.dto.PublisherDTO;
 import com.example.ecommercebooksales.entity.Publisher;
 import com.example.ecommercebooksales.service.PublisherService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class PublisherController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PublisherDTO> createPublishers(@RequestBody PublisherDTO request) {
+    public ResponseEntity<PublisherDTO> createPublishers(@RequestBody @Valid PublisherDTO request) {
         PublisherDTO createPublisher = publisherService.createPublisher(request);
         return ResponseEntity.ok(createPublisher);
     }
@@ -59,7 +60,7 @@ public class PublisherController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PublisherDTO> updatePublishers(@PathVariable Long id,
-                                                   @RequestBody PublisherDTO request) {
+                                                   @RequestBody @Valid PublisherDTO request) {
         PublisherDTO updatedPublisher = publisherService.updatePublisher(id, request);
         if (updatedPublisher == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(updatedPublisher);

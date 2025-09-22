@@ -5,14 +5,16 @@ import com.example.ecommercebooksales.dto.requestDTO.OrderRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.OrderItemResponseDTO;
 import com.example.ecommercebooksales.dto.responseDTO.OrderResponseDTO;
 import com.example.ecommercebooksales.entity.Books;
-import com.example.ecommercebooksales.entity.OrderItem;
+import com.example.ecommercebooksales.entity.Items;
 import com.example.ecommercebooksales.entity.Orders;
 import com.example.ecommercebooksales.entity.Users;
+import com.example.ecommercebooksales.enums.OrderStatus;
 import com.example.ecommercebooksales.exception.ResourceNotFoundException;
 import com.example.ecommercebooksales.repository.BookRepository;
 import com.example.ecommercebooksales.repository.OrderItemRepository;
 import com.example.ecommercebooksales.repository.OrderRepository;
 import com.example.ecommercebooksales.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
     private OrderRepository orderRepository;
@@ -31,15 +34,6 @@ public class OrderService {
 
     private final OrderItemRepository orderItemRepository;
 
-    public OrderService(OrderRepository orderRepository,
-                        UserRepository userRepository,
-                        OrderItemRepository orderItemRepository,
-                        BookRepository bookRepository) {
-        this.orderRepository = orderRepository;
-        this.userRepository = userRepository;
-        this.orderItemRepository = orderItemRepository;
-        this.bookRepository = bookRepository;
-    }
 
     // Tạo đơn hàng mới
     @Transactional
@@ -50,9 +44,9 @@ public class OrderService {
         Orders order = new Orders();
         order.setUsers(user);
         order.setShippingAddress(request.getShippingAddress());
-        order.setStatus("pending");
+        order.setStatus(OrderStatus.PENDING);
 
-        List<OrderItem> items = new ArrayList<>();
+        List<Items> items = new ArrayList<>();
         long totalAmount = 0L;
 
         for (OrderItemResquestDTO itemReq : request.getListOrderItems()) {
@@ -65,7 +59,7 @@ public class OrderService {
 
             book.setStockQuantity(book.getStockQuantity() - itemReq.getQuantity());
 
-            OrderItem item = new OrderItem();
+            Items item = new Items();
             item.setOrders(order);
             item.setBooks(book);
             item.setQuantity(itemReq.getQuantity());
@@ -75,7 +69,7 @@ public class OrderService {
             totalAmount += itemReq.getPrice() * itemReq.getQuantity();
         }
 
-        order.setOrderItems(items); // Gán list cho order
+        order.setItems(items); // Gán list cho order
         order.setTotalAmount(totalAmount);
 
         Orders savedOrder = orderRepository.save(order);
@@ -111,7 +105,7 @@ public class OrderService {
     public OrderResponseDTO updateOrderStatus(Long orderId, String status) {
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-        order.setStatus(status);
+        order.setStatus(order.getStatus());
         Orders updated = orderRepository.save(order);
         return convertToDTO(updated);
     }
@@ -130,11 +124,11 @@ public class OrderService {
             dto.setUserName(order.getUsers().getUserName());
         }
 
-        if (order.getOrderItems() != null) {
+        if (order.getItems() != null) {
             dto.setListOrderItems(
-                    order.getOrderItems().stream().map(item -> {
+                    order.getItems().stream().map(item -> {
                         OrderItemResponseDTO itemDTO = new OrderItemResponseDTO();
-                        itemDTO.setOrderItemId(item.getOrderItemId());
+                        itemDTO.setOrderItemId(item.getItemId());
                         itemDTO.setQuantity(item.getQuantity());
                         itemDTO.setPrice(item.getPrice());
                         if (item.getBooks() != null) {

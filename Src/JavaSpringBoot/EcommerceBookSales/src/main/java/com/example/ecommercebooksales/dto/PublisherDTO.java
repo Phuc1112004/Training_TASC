@@ -23,8 +23,7 @@ public class PublisherDTO {
     @URL(message = "Website không hợp lệ")
     private String website;
     private String country;
-    @Min(value = 1000, message = "Năm thành lập không hợp lệ")
-    @Max(value = 2100, message = "Năm thành lập không hợp lệ")
+    @PastOrPresent(message = "Năm thành lập phải nhỏ hơn hoặc bằng ngày hiện tại")
     private LocalDate foundedYear;
     private String description;
 }
