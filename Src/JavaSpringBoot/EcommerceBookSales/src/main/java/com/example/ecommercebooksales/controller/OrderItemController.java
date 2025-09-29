@@ -1,7 +1,8 @@
 package com.example.ecommercebooksales.controller;
 
+import com.example.ecommercebooksales.dto.requestDTO.OrderItemResquestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.OrderItemResponseDTO;
-import com.example.ecommercebooksales.service.ItemService;
+import com.example.ecommercebooksales.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,39 +16,39 @@ public class OrderItemController {
     // đã tạo đơn hàng thì ko  được thay  đổi nếu mua thêm sẽ tạo đơn hàng khác
 
     @Autowired
-    private ItemService itemService;
+    private OrderItemService orderItemService;
 
     // Tạo mới OrderItem
-//    @PostMapping
-//    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
-//    public ResponseEntity<OrderItemResponseDTO> createOrderItems(@RequestBody OrderItemResquestDTO request) {
-//        OrderItemResponseDTO created = orderItemService.createOrderItem(request);
-//        return ResponseEntity.ok(created);
-//    }
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
+    public ResponseEntity<OrderItemResponseDTO> createOrderItems(@RequestBody OrderItemResquestDTO request) {
+        OrderItemResponseDTO created = orderItemService.createOrderItem(request);
+        return ResponseEntity.ok(created);
+    }
 
-//    // Lấy danh sách OrderItem theo orderId
-//    @GetMapping("/order/{orderId}")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
-//    public ResponseEntity<List<OrderItemResponseDTO>> getItemsByOrderId(@PathVariable Long orderId) {
-//        List<OrderItemResponseDTO> items = itemService.getItemsByOrderId(orderId);
-//        return ResponseEntity.ok(items);
-//    }
+    // Lấy danh sách OrderItem theo orderId
+    @GetMapping("/order/{orderId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
+    public ResponseEntity<List<OrderItemResponseDTO>> getItemsByOrderId(@PathVariable Long orderId) {
+        List<OrderItemResponseDTO> items = orderItemService.getOrderItems(orderId);
+        return ResponseEntity.ok(items);
+    }
 
-    // Xóa OrderItem theo orderItemId
-//    @DeleteMapping("/{orderItemId}")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
-//    public ResponseEntity<Void> deleteOrderItem(@PathVariable Long orderItemId) {
-//        orderItemService.deleteOrderItem(orderItemId);
-//        return ResponseEntity.noContent().build(); // HTTP 204
-//    }
+//     Xóa OrderItem theo orderItemId
+    @DeleteMapping("/{orderItemId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
+    public ResponseEntity<Void> deleteOrderItem(@PathVariable Long orderItemId) {
+        orderItemService.deleteOrderItem(orderItemId);
+        return ResponseEntity.noContent().build(); // HTTP 204
+    }
 
-    // Cập nhật số lượng OrderItem
-//    @PutMapping("/{orderItemId}/quantity/{quantity}")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
-//    public ResponseEntity<OrderItemResponseDTO> updateQuantity(
-//            @PathVariable Long orderItemId,
-//            @PathVariable int quantity) {
-//        OrderItemResponseDTO updated = orderItemService.updateOrderItemQuantity(orderItemId, quantity);
-//        return ResponseEntity.ok(updated);
-//    }
+//     Cập nhật số lượng OrderItem
+    @PutMapping("/{orderItemId}/quantity/{quantity}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
+    public ResponseEntity<OrderItemResponseDTO> updateQuantity(
+            @PathVariable Long orderItemId,
+            @PathVariable int quantity) {
+        OrderItemResponseDTO updated = orderItemService.updateOrderItem(orderItemId, quantity);
+        return ResponseEntity.ok(updated);
+    }
 }

@@ -16,5 +16,5 @@ public class OrderRequestDTO {
     private String shippingAddress;   // địa chỉ ship
     @NotEmpty(message = "Đơn hàng phải có ít nhất một sản phẩm")
     @Valid
-    private List<OrderItemResquestDTO> listOrderItems;   // danh sách + số lượng
+    private List<OrderItemResquestDTO> listItems;   // danh sách + số lượng
 }

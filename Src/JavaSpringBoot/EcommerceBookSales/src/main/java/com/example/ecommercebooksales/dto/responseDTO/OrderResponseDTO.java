@@ -1,5 +1,6 @@
 package com.example.ecommercebooksales.dto.responseDTO;
 
+import com.example.ecommercebooksales.dto.requestDTO.OrderItemResquestDTO;
 import com.example.ecommercebooksales.enums.OrderStatus;
 import lombok.Data;
 
@@ -15,6 +16,6 @@ public class OrderResponseDTO {
     private OrderStatus status;               // pending, paid, shipped...
     private String shippingAddress;
     private LocalDateTime createdAt;
-    private List<OrderItemResponseDTO> listOrderItems; // chi tiết từng sách
+    private List<OrderItemResponseDTO> listItems; // chi tiết từng sách
 
 }

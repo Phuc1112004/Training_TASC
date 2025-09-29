@@ -47,7 +47,7 @@ public class Books {
 //    private List<CartItem> cartItems;
 
     @OneToMany(mappedBy = "books")
-    private List<Items> items;
+    private List<OrderItem> items;
 
     @OneToMany(mappedBy = "books")
     private List<Review> reviews;

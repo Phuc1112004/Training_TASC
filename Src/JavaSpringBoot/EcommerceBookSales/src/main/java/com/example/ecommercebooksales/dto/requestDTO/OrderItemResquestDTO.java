@@ -13,7 +13,7 @@ import lombok.Setter;
 public class OrderItemResquestDTO {
     @NotNull(message = "BookId không được để trống")
     private Long bookId;
-
+    private Long orderId;
     private Long userId;
     @Positive(message = "Số lượng phải lớn hơn 0")
     private Integer quantity;

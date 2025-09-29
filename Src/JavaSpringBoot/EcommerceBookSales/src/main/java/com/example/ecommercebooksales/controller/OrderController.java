@@ -2,12 +2,16 @@ package com.example.ecommercebooksales.controller;
 
 import com.example.ecommercebooksales.dto.requestDTO.OrderRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.OrderResponseDTO;
+import com.example.ecommercebooksales.enums.OrderStatus;
 import com.example.ecommercebooksales.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -47,4 +51,15 @@ public class OrderController {
     ) {
         return orderService.updateOrderStatus(orderId, status);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<OrderResponseDTO>> searchOrders(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) OrderStatus status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo
+    ) {
+        return ResponseEntity.ok(orderService.searchOrders(keyword, status, dateFrom, dateTo));
+    }
+
 }

@@ -9,23 +9,21 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-@Table(name = "items")
-public class Items {
+@Table(name = "order_item")
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemId;
+    private Long orderItemId;
 
     @ManyToOne
-    private Users users;
-
-    @ManyToOne
+    @JoinColumn(name = "book_id")
     private Books books;
 
     private Integer quantity;
 
     private Long price;
-    private Integer status;
 
     @ManyToOne
+    @JoinColumn(name = "order_id")
     private Orders orders; // null -> giỏ hàng, != null -> đã order
 }

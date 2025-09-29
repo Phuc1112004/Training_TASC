@@ -123,7 +123,7 @@ public class BookService {
     // ---------------- DELETE ----------------
     public boolean deleteBook(Long id) {
         List<Books> books = bookRepository.findByBookNewIdOrBookId(id, id);
-        List<Items> items = orderItemRepository.findAllByBooksIn(books);
+        List<OrderItem> items = orderItemRepository.findAllByBooksIn(books);
         if (items.isEmpty()) {
             bookRepository.deleteById(id);
             return true;

@@ -25,7 +25,7 @@ public class Orders {
     private Users users;
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Items> items;
+    private List<OrderItem> listOrderItems;
 
     @OneToMany(mappedBy = "orders")
     private List<Payment> payment;

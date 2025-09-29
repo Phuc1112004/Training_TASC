@@ -1,4 +1,4 @@
-package com.example.ecommercebooksales.config;
+package com.example.ecommercebooksales.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,7 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (jwtUtil.validateToken(token, userDetails)) {
                 List<String> roles = jwtUtil.extractRoles(token);
                 if (roles == null) {
-                    roles = List.of(); // tránh NPE
+                    roles = List.of();
                 }
 
                 List<SimpleGrantedAuthority> authorities = roles.stream()

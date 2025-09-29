@@ -1,4 +1,4 @@
-package com.example.ecommercebooksales.config;
+package com.example.ecommercebooksales.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

@@ -1,4 +1,4 @@
-package com.example.ecommercebooksales.config;
+package com.example.ecommercebooksales.security;
 
 import com.example.ecommercebooksales.entity.Users;
 import com.example.ecommercebooksales.repository.UserRepository;

@@ -1,4 +1,4 @@
-package com.example.ecommercebooksales.config;
+package com.example.ecommercebooksales.security;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +33,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Cho phép các API authentication không cần token
                         .requestMatchers("/auth/**").permitAll()
+
+                        // Cho phép VNPay callback không cần token
+                        .requestMatchers("/api/vnpay/return").permitAll()
+                        .requestMatchers("/api/vnpay/create-payment/**").authenticated() // cái này user phải login mới tạo đơn
+
                         // Các request khác phải xác thực
                         .anyRequest().authenticated()
                 )

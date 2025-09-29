@@ -1,6 +1,8 @@
 package com.example.ecommercebooksales.entity;
 
 
+import com.example.ecommercebooksales.enums.PaymentMethod;
+import com.example.ecommercebooksales.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,8 +20,10 @@ public class Payment {
     @JoinColumn(name = "order_id")
     private Orders orders;
 
-    private String paymentMethod; // COD, VNPay, Momo, Paypal...
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod; // COD, VNPay, Momo, Paypal...
     private Long amount;
-    private String status; // pending, completed, failed
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status; // pending, completed, failed
     private LocalDateTime paidAt;
 }

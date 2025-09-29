@@ -1,6 +1,6 @@
 package com.example.ecommercebooksales.controller;
 
-import com.example.ecommercebooksales.config.JwtUtil;
+import com.example.ecommercebooksales.security.JwtUtil;
 import com.example.ecommercebooksales.dto.requestDTO.LoginRequest;
 import com.example.ecommercebooksales.dto.requestDTO.RegisterRequest;
 import com.example.ecommercebooksales.dto.responseDTO.LoginResponse;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;

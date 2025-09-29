@@ -5,13 +5,12 @@ import com.example.ecommercebooksales.dto.requestDTO.OrderRequestDTO;
 import com.example.ecommercebooksales.dto.responseDTO.OrderItemResponseDTO;
 import com.example.ecommercebooksales.dto.responseDTO.OrderResponseDTO;
 import com.example.ecommercebooksales.entity.Books;
-import com.example.ecommercebooksales.entity.Items;
+import com.example.ecommercebooksales.entity.OrderItem;
 import com.example.ecommercebooksales.entity.Orders;
 import com.example.ecommercebooksales.entity.Users;
 import com.example.ecommercebooksales.enums.OrderStatus;
 import com.example.ecommercebooksales.exception.ResourceNotFoundException;
 import com.example.ecommercebooksales.repository.BookRepository;
-import com.example.ecommercebooksales.repository.OrderItemRepository;
 import com.example.ecommercebooksales.repository.OrderRepository;
 import com.example.ecommercebooksales.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +20,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     private final UserRepository userRepository;
 
     private final BookRepository bookRepository;
-
-    private final OrderItemRepository orderItemRepository;
-
 
     // Tạo đơn hàng mới
     @Transactional
@@ -45,11 +42,12 @@ public class OrderService {
         order.setUsers(user);
         order.setShippingAddress(request.getShippingAddress());
         order.setStatus(OrderStatus.PENDING);
+        order.setCreatedAt(LocalDateTime.now());
 
-        List<Items> items = new ArrayList<>();
+        List<OrderItem> items = new ArrayList<>();
         long totalAmount = 0L;
 
-        for (OrderItemResquestDTO itemReq : request.getListOrderItems()) {
+        for (OrderItemResquestDTO itemReq : request.getListItems()) {
             Books book = bookRepository.findById(itemReq.getBookId())
                     .orElseThrow(() -> new ResourceNotFoundException("Book not found: " + itemReq.getBookId()));
 
@@ -59,17 +57,17 @@ public class OrderService {
 
             book.setStockQuantity(book.getStockQuantity() - itemReq.getQuantity());
 
-            Items item = new Items();
+            OrderItem item = new OrderItem();
             item.setOrders(order);
             item.setBooks(book);
             item.setQuantity(itemReq.getQuantity());
-            item.setPrice(itemReq.getPrice());
+            item.setPrice(book.getSalePrice());
 
             items.add(item); // Thêm vào list
-            totalAmount += itemReq.getPrice() * itemReq.getQuantity();
+            totalAmount += book.getSalePrice() * itemReq.getQuantity();
         }
 
-        order.setItems(items); // Gán list cho order
+        order.setListOrderItems(items); // Gán list cho order
         order.setTotalAmount(totalAmount);
 
         Orders savedOrder = orderRepository.save(order);
@@ -94,6 +92,17 @@ public class OrderService {
                 .toList();
     }
 
+    public Orders findById(Long orderId) {
+        Optional<Orders> order = orderRepository.findById(orderId);
+        return order.orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+    }
+
+    public Orders save(Orders order){
+        return orderRepository.save(order);
+    }
+
+
+
     // Xóa đơn hàng
     public void deleteOrder(Long orderId) {
         Orders order = orderRepository.findById(orderId)
@@ -115,7 +124,7 @@ public class OrderService {
         OrderResponseDTO dto = new OrderResponseDTO();
         dto.setOrderId(order.getOrderId());
         dto.setTotalAmount(order.getTotalAmount());
-        dto.setStatus(order.getStatus());
+        dto.setStatus(order.getStatus() != null ? order.getStatus() : OrderStatus.PENDING);
         dto.setShippingAddress(order.getShippingAddress());
         dto.setCreatedAt(LocalDateTime.now());
 
@@ -124,13 +133,15 @@ public class OrderService {
             dto.setUserName(order.getUsers().getUserName());
         }
 
-        if (order.getItems() != null) {
-            dto.setListOrderItems(
-                    order.getItems().stream().map(item -> {
+        if (order.getListOrderItems() != null) {
+            dto.setListItems(
+                    order.getListOrderItems().stream().map(item -> {
                         OrderItemResponseDTO itemDTO = new OrderItemResponseDTO();
-                        itemDTO.setOrderItemId(item.getItemId());
+                        itemDTO.setOrderItemId(item.getOrderItemId());
                         itemDTO.setQuantity(item.getQuantity());
                         itemDTO.setPrice(item.getPrice());
+                        itemDTO.setOrderId(item.getOrders().getOrderId());
+
                         if (item.getBooks() != null) {
                             itemDTO.setBookId(item.getBooks().getBookId());
                             itemDTO.setBookTitle(item.getBooks().getTitle());
@@ -140,5 +151,16 @@ public class OrderService {
             );
         }
         return dto;
+    }
+
+
+    public List<OrderResponseDTO> searchOrders(String keyword,
+                                               OrderStatus status,
+                                               LocalDateTime dateFrom,
+                                               LocalDateTime dateTo) {
+        return orderRepository.searchOrders(keyword, status, dateFrom, dateTo)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 }
